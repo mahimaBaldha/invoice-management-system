@@ -1,0 +1,50 @@
+<html>
+
+<head>
+        <title>
+            Register
+        </title>
+
+    <style>
+        .formdata{
+            margin: 6%;
+            padding: 3%;
+            text-align: center;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            color: rgb(97, 94, 94);
+        }
+        .inputfield{
+            margin: 1%;
+            width: 100%;
+        }
+        .formdataouter{
+
+            margin: 7%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="formdataouter">
+    <div class="formdata">
+        <form action="" method="post">
+        {% csrf_token %}
+
+        <input type="text" name="first_name" placeholder="First Name" class="inputfield"><br>
+        <input type="text" name="last_name" placeholder="Last Name" class="inputfield"><br>
+        <input type="text" name="username" placeholder="User Name" class="inputfield"><br>
+        <input type="email" name="email" placeholder="Email" class="inputfield"><br>
+        <input type="password" name="password" placeholder="Password" class="inputfield"><br>
+        <input type="password" name="confirm_password" placeholder="Confirm Password" class="inputfield"><br>
+        <input type="submit">
+    </form>
+    </div>
+    <div>
+        {% for message in messages%}
+        <h3> {{ message }}</h3>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

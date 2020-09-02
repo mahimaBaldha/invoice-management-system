@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+    <style>
+        .fileUpload{
+            margin: 5%;
+            padding: 3%;
+            text-align: center;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            color: rgb(97, 94, 94);
+        }
+
+        .fileform{
+            margin-top: 4%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fileUpload">
+        <a href="/login" style="text-decoration:None">LOGIN</a><br/>
+        <a href="/register" style="text-decoration:None">SIGN UP</a>
+    </div>
+    <div class="fileUpload">
+        <h3>Upload a file</h3>
+        <hr/>
+        {% block content %}
+        <form action="" method="post" enctype="multipart/form-data" class="fileform">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Upload</button>
+        </form>
+        {% endblock %}
+    </div>
+</body>
+</html>
