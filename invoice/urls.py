@@ -7,9 +7,8 @@ urlpatterns = [
 	path('', views.home, name="home"),
 	path('register/', views.register, name="register"),
 	path('login/', views.login, name="login"),
-	path('demo/', views.demo, name="demo"),
-	# path('upload/', views.upload, name="upload"),
-	# path('cart/', views.cart, name="cart"),
-	# path('checkout/', views.checkout, name="checkout"),
-
+	path('logout/', views.logout, name="logout"),
+	path('fileupload/', views.uploadFile, name="uploadFile"),
+	path('create_invoice/<int:id>/<str:pdf_name>', views.createInvoice, name="upload"),
+	# path('addItem/', views.addItems, name="addItems"),
 ]

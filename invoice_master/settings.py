@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
+import mimetypes
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -78,10 +79,10 @@ WSGI_APPLICATION = 'invoice_master.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dfor59bvttmcrg',
-        'USER': 'nodprkidkakvou',
-        'PASSWORD': 'b3a3d5e41dab58e6cea5855fcc40ab7f432d7f87c469b9e348488af75b71e153',
-        'HOST': 'ec2-18-232-143-90.compute-1.amazonaws.com',
+        'NAME': 'd3u4vmqbt8isji',
+        'USER': 'shafdtkpjkxcca',
+        'PASSWORD': 'a64399cd08eb532e4da04c59269a31961970eca999b81f982010229ece89bdfd',
+        'HOST': 'ec2-50-16-221-180.compute-1.amazonaws.com',
         'PORT': '5432'
     }
 }
@@ -131,3 +132,17 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT= os.path.join(BASE_DIR, 'media/')
 MEDIA_URL= "/media/"
+
+
+mimetypes.add_type("text/css", ".css", True)
+mimetypes.add_type("text/html", ".css", True)
+
+
+# Email Settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'edunetwork000@gmail.com'
+EMAIL_HOST_PASSWORD = 'edu_0000'
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
