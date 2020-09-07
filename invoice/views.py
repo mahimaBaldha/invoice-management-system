@@ -19,7 +19,6 @@ def login(request):
         if user is not None:
             auth.login(request, user)
             request.session["user"] = user.username
-            # print(request.session["user"])
             return redirect("/")
         else:
             messages.info(request, 'Invalid credentials')
@@ -29,8 +28,8 @@ def login(request):
         print("request came for get!!")
         return render(request, "login.html")
 
-def register(request):
 
+def register(request):
     if request.method == 'POST':
         print("Request came for post")
         uname = request.POST['username']
@@ -61,35 +60,25 @@ def register(request):
 
 
 def home(request):
-    if request.method == 'POST':
-        uname = request.POST['username']
-        pwd = request.POST['password']
-        user = auth.authenticate(username=uname, password=pwd)
+    if 'user' in request.session:
+        user_session = request.session["user"]
+        user = User.objects.get(username=user_session)
+        invoices = Invoice.objects.all()
+        for invoice in invoices:
+            if invoice.invoice_number is None and invoice.vendor_name is None:
+                invoice.delete()
 
-        if user is not None:
-            auth.login(request, user)
-            request.session["user"] = user.username
-            # print(request.session["user"])
-            return redirect("/")
+        if user.is_superuser:
+            invoices = Invoice.objects.all()
+            role = "Manager"
         else:
-            messages.info(request, 'Invalid credentials')
-            return redirect('login')
+            invoices = Invoice.objects.filter(agent=user.id)
+            role = "Agent"
+        context = {'invoice': invoices, 'role': role}
 
+        return render(request, "index.html", context)
     else:
-        context = {}
-        if 'user' in request.session:
-            user_session = request.session["user"]
-            user = User.objects.get(username=user_session)
-            if user.is_superuser:
-                invoices = Invoice.objects.all()
-                role = "Manager"
-            else:
-                invoices = Invoice.objects.filter(agent=user.id)
-                role = "Agent"
-            context = {'invoice': invoices, 'role': role}
-            return render(request, "index.html", context)
-        else:
-            return redirect("login")
+        return redirect("login")
 
 
 def logout(request):
@@ -105,7 +94,6 @@ def uploadFile(request):
             if 'user' in request.session:
                 user_session = request.session["user"]
                 user = User.objects.get(username=user_session)
-                print(user)
                 pdf_name = form.cleaned_data["pdf_copy"]
                 initial_obj = form.save()
                 invoice = Invoice()
@@ -128,7 +116,6 @@ def uploadFile(request):
 def createInvoice(request, id, pdf_name):
 
     if request.method == 'POST':
-
         invoices = Invoice.objects.filter(id=id)
         for invoice in invoices:
             invoice.invoice_number = request.POST.get('invoice_no') if request.POST.get('invoice_no') else None
@@ -136,9 +123,9 @@ def createInvoice(request, id, pdf_name):
             invoice.date = request.POST.get('invoice_date') if request.POST.get('invoice_date') else None
             invoice.save()
 
-        desc = request.POST.getlist('desc')
-        qty = request.POST.getlist('qty')
-        rate = request.POST.getlist('rate')
+        desc = request.POST.getlist('desc') if request.POST.get('desc') else None
+        qty = request.POST.getlist('qty') if request.POST.get('qty') else None
+        rate = request.POST.getlist('rate') if request.POST.get('rate') else None
 
         for i in range(len(desc)):
             item = Items()
@@ -148,23 +135,20 @@ def createInvoice(request, id, pdf_name):
             item.invoice_id = id
             item.save()
 
-        for invoice in invoices:
-            if invoice.invoice_number and invoice.vendor_name is None:
-                invoice.delete()
 
         # Email Functionality
-        link = invoice.pdf_copy.url
-        Manager = User.objects.get(is_superuser=True)
-        send_mail(
-            'New Invoice Generated',
-            'This is the link for the new invoice generated'+link,
-            'edunetwork000@gmail.com',
-            [Manager.email],
-            fail_silently=False
-        )
+        # link = invoice.pdf_copy.url
+        # Manager = User.objects.get(is_superuser=True)
+        # send_mail(
+        #     'New Invoice Generated',
+        #     'This is the link for the new invoice generated'+link,
+        #     'edunetwork000@gmail.com',
+        #     [Manager.email],
+        #     fail_silently=False
+        # )
         return redirect("/")
     else:
-        invoice = Invoice.objects.filter(id=id)
-        print(invoice)
-        return render(request, "create_invoice.html", {"pk":id, "pdf_name":pdf_name})
+        invoice = Invoice.objects.get(id=id)
+        pdf = invoice.pdf_copy.url
+        return render(request, "create_invoice.html", {"pk":id, "pdf_name":pdf_name, "pdf": pdf})
 
