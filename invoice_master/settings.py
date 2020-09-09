@@ -146,3 +146,4 @@ EMAIL_HOST_PASSWORD = 'edu_0000'
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
